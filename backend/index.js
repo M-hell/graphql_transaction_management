@@ -2,6 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 
+import path from 'path';
 import express from "express";
 import http from 'http';
 import cors from 'cors';
@@ -23,6 +24,7 @@ configurePassport();
 
 const app = express();
 const httpServer = http.createServer(app);
+const __dirname = path.resolve();
 
 
 
@@ -59,7 +61,7 @@ app.use(
     "/graphql",
 	cors(
         {
-            origin: "http://localhost:3000",
+            origin: process.env.FRONTEND_URL,
 		credentials: true,
         }
     ),
@@ -68,6 +70,15 @@ app.use(
 		context: async ({ req, res }) => buildContext({ req, res }),
   }),
 );
+
+// npm run build will build your frontend app, and it will the optimized version of your app
+app.use(express.static(path.join(__dirname, "frontend/dist")));
+
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "frontend/dist", "index.html"));
+});
+
+
 await connectDB();
 await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
 console.log(`🚀 Server ready at http://localhost:4000/graphql`);
