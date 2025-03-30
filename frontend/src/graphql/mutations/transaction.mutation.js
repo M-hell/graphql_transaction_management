@@ -40,3 +40,8 @@ export const DELETE_TRANSACTION = gql`
 		}
 	}
 `;
+export const GET_AI_RESPONSE = gql`
+	mutation GetAIResponse {
+    	getAIResponse
+}
+`;

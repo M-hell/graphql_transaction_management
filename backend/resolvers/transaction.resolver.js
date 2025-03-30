@@ -1,5 +1,6 @@
 import Transaction from "../models/transaction.model.js";
 import User from "../models/user.model.js";
+import { GoogleGenAI } from "@google/genai";
 
 const transactionResolver = {
 	Query: {
@@ -86,6 +87,69 @@ const transactionResolver = {
 				throw new Error("Error deleting transaction");
 			}
 		},
+		getAIResponse: async (_, __, context) => {
+			try {
+			  // 1. Get all transactions for the authenticated user
+			  const userId = context.getUser()._id;
+			  const transactions = await Transaction.find({ userId }).sort({ date: -1 });
+			  
+			  if (!transactions || transactions.length === 0) {
+				return "No transactions found. Start by adding some transactions to get financial advice.";
+			  }
+	  
+			  // 2. Prepare transaction summary for AI
+			  const transactionSummary = transactions.map(t => ({
+				description: t.description,
+				amount: t.amount,
+				category: t.category,
+				paymentType: t.paymentType,
+				date: t.date.toISOString().split('T')[0]
+			  }));
+	  
+			  // 3. Calculate some basic statistics
+			  const totalExpenses = transactions
+				.filter(t => t.category === 'expense')
+				.reduce((sum, t) => sum + t.amount, 0);
+			  
+			  const totalSavings = transactions
+				.filter(t => t.category === 'saving')
+				.reduce((sum, t) => sum + t.amount, 0);
+	  
+			  // 4. Create prompt for Gemini
+			  const prompt = `
+			  Analyze these financial transactions and provide personalized advice:
+			  
+			  Transaction History:
+			  ${JSON.stringify(transactionSummary, null, 2)}
+			  
+			  Key Statistics:
+			  - Total Expenses: $${totalExpenses.toFixed(2)}
+			  - Total Savings: $${totalSavings.toFixed(2)}
+			  
+			  Please provide specific recommendations on:
+			  1. How to better manage expenses based on spending patterns
+			  2. Debt management strategies if applicable
+			  3. How to optimize savings based on current habits
+			  4. General financial health improvement tips
+			  5. Any red flags in spending behavior
+			  
+			  Make the advice practical and actionable. Don't mention that you're an AI - present it as financial insights.
+			  `;
+
+			  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+	  
+			  // 5. Get response from Gemini
+			  const response = await ai.models.generateContent({
+				model: "gemini-2.0-flash",
+				contents: prompt,
+			  });
+	  
+			  return response.text;
+			} catch (err) {
+			  console.error("Error generating AI response:", err);
+			  return "Unable to generate financial advice at this time. Please try again later.";
+			}
+		  }
 	},
 	Transaction: {
 		user: async (parent) => {
