@@ -12,6 +12,7 @@ import { GET_TRANSACTION_STATISTICS } from "../graphql/queries/transaction.query
 import { GET_AUTHENTICATED_USER } from "../graphql/queries/user.query";
 import { GET_AI_RESPONSE } from "../graphql/mutations/transaction.mutation";
 import { useEffect, useState } from "react";
+import { FiMessageSquare } from "react-icons/fi";
 
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -148,6 +149,23 @@ const HomePage = () => {
           )}
         </button>
       </div>
+
+      {/* Floating Assistant Icon */}
+      <a 
+        href="https://gibberlink-psi.vercel.app/" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fixed bottom-9 left-9 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50"
+        style={{ width: '60px', height: '60px' }}
+      >
+        <FiMessageSquare className="w-6 h-6" />
+        <div 
+          className="absolute -top-2 -right-2 bg-white text-indigo-600 text-xs font-bold rounded-full p-1 shadow-sm flex justify-center items-center"
+          style={{ minWidth: '100px' }}
+        >
+          Talk with AI
+        </div>
+      </a>
 
 {/* AI Advice Modal - Updated Dark Theme */}
 {showModal && (
