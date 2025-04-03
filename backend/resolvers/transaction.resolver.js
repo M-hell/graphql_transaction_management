@@ -132,6 +132,12 @@ const transactionResolver = {
 			  3. How to optimize savings based on current habits
 			  4. General financial health improvement tips
 			  5. Any red flags in spending behavior
+			  6. Future prediction
+			  7. Guide where to spend money more and where to save
+			  8. If expense is more on food and cloths and medicines . So food and cloths cost can turn to be saving , but continue with medicines
+			  9. Need vs fun/etc expenses
+			  10. Can plan trip or other fun with saving without going into debt and all other shits
+
 			  
 			  Make the advice practical and actionable. Don't mention that you're an AI - present it as financial insights.
 			  `;
