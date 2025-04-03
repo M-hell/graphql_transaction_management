@@ -152,7 +152,7 @@ const HomePage = () => {
 
       {/* Floating Assistant Icon */}
       <a 
-        href="https://gibberlink-psi.vercel.app/" 
+        href="https://gibberlink-elevenlabs.vercel.app/" 
         target="_blank" 
         rel="noopener noreferrer"
         className="fixed bottom-9 left-9 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50"
